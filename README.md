@@ -242,6 +242,6 @@ credentials "app.terraform.io" {
 
 ## Structure of terraform infrastructure files :
 
-![Structure](https://github.com/Vidinci/infra/blob/main/tf-files_folder_tree-start.png)
+![Structure](https://github.com/ycit-team-terraformers/terraform-modules-gke-infra/blob/main/tf-files_folder_tree-start.png)
 
-![Structure](https://github.com/Vidinci/infra/blob/main/tf-files_folder_tree-end.png)
+![Structure](https://github.com/ycit-team-terraformers/terraform-modules-gke-infra/blob/main/tf-files_folder_tree-end.png)
