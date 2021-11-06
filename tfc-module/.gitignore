@@ -1,6 +1,5 @@
-# Google cloud credentials, token of service account
+# GCP service account credential
 terraform-svc.json
-
 
 # Local .terraform directories
 **/.terraform/*

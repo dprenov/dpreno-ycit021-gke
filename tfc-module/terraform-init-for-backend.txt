@@ -1,0 +1,1 @@
+terraform init -backend-config="tf-bucket-ycit021" -backend-config="terraform/state" -backend-config="terraform-svc.json"
