@@ -30,7 +30,7 @@ Each environment will have a folder with the files proper to the environment, th
 
 | Environment | Purpose | Contact point |
 |------|-----------------|:--------:|
-| dev | Group of developer | Antonio M / Diego |
+| dev | Group of developers | Antonio M / Diego P |
 | stg | Validate and integrate modules | Christian B |
 | prd | Host delivered and installed services | Devon P |
 | uat | Unit testings dynamic modules | Camilo M |
@@ -39,7 +39,7 @@ Each environment will have a folder with the files proper to the environment, th
 
 # Networking parameters
 
-| Environment | Subnet name | Pod range name | Service range name | node_preemptible |
+| Environment | Network range | Pod range name | Service range name | node_preemptible |
 |------|-------------|------|---------|:--------:|
 | dev | subnet-dev | pod-d | serv-dev | true |
 | stg | subnet-stg | pod-s | serv-stg | true |
@@ -49,7 +49,7 @@ Each environment will have a folder with the files proper to the environment, th
 
 # Network IPv4 schema
 
-| Environment | Subnet | Pod range | Service range | Kubectl API range |
+| Environment | Network CIDR range | Pod CIDR range | Service CIDR range | Master CIDR (Kubectl API) range |
 |------|-------------|------|---------|:--------:|
 | dev | 10.128.1.0/26 | 172.20.0.0/18 | 172.100.0.0/21 | 172.16.0.0/28 |
 | stg | 10.128.2.0/26 | 172.21.0.0/18 | 172.101.0.0/21 | 172.16.0.16/28 |

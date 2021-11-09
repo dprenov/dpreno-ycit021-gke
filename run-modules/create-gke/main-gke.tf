@@ -27,7 +27,7 @@ provider "google-beta" {
 }
 
 locals {
-    tfenvironment 	= 	terraform.workspace
+  tfenvironment 	= 	terraform.workspace
 	product_string	=	format("tformers-%s", local.tfenvironment)
 }
 
@@ -47,12 +47,13 @@ module "vpc_tformers" {
   
   
 #VPC specific 
-  network_cidr       = "10.128.1.0/26"
-  pods_cidr          = "172.0.0.0/18"
+  network_cidr       = var.network_cidr_range    # "10.128.1.0/26"
+  pods_cidr          = var.pods_cidr_range       # "172.0.0.0/18"
   pods_cidr_name     = var.pods_cidr_name
-  services_cidr      = "172.10.0.0/21"
+  services_cidr      = var.services_cidr_range    # "172.10.0.0/21"
   private_ip_google_access = true
-  services_cidr_name = "services"
+  services_cidr_name = var.services_cidr_name
+
   subnet_log_config_aggregation_interval = "INTERVAL_15_MIN"
   subnet_log_config_flow_sampling        = 0.1
   subnet_log_config_metadata             = "INCLUDE_ALL_METADATA"
@@ -71,7 +72,6 @@ module "gke_tformers" {
   version = "1.0.2"
   # insert required variables here
 
-
 #PROJECT info
   billing_account = var.billing_account 			#
   project_name    = var.gcp_project_id
@@ -89,9 +89,9 @@ module "gke_tformers" {
 #GKE specific
   
   enable_private_nodes   = "true"
-  master_ipv4_cidr_block = "172.16.0.0/28"
+  master_ipv4_cidr_block = var.master_ipv4_cidr_block_range     #"172.16.0.0/28"
   pods_range_name        = var.pods_cidr_name                  #"pods"
-  services_range_name    = "services"
+  services_range_name    = var.services_cidr_name
   kubernetes_version     = "1.20.10-gke.1600"
   initial_node_count     =  var.initial_node_count 
   remove_default_node_pool= true
@@ -102,13 +102,13 @@ module "gke_tformers" {
   cluster_timeout_delete = "30m"
   
 #NODE pool  specifc
-  node_preemptible      = true  
+  node_preemptible      = var.node_preemptible  
   node_pool_name        = format("main-pool-%s", local.tfenvironment)
   gke_pool_node_count   = "1"
   gke_pool_image_type   = "COS"
   gke_pool_disk_size_gb = "100"
   gke_pool_disk_type    = "pd-standard"
-  gke_pool_machine_type = "e2-small"
+  gke_pool_machine_type = var.gke_pool_machine_type
   node_config_timeout_create = "10m"
   node_config_timeout_delete = "10m"
 
