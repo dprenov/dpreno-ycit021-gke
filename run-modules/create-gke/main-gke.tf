@@ -34,8 +34,8 @@ locals {
 # Create VPC first using VPC module
 
 module "vpc_tformers" {
-  source  = "app.terraform.io/Terraformers21/modvpc/gcp"
-  version = "1.0.0"
+  source  = "app.terraform.io/Tformers/cmvpc/gcp"
+  version = "1.0.2"
   # insert required variables here
 
 
