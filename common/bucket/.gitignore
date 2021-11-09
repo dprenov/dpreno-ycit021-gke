@@ -3,9 +3,17 @@ terraform-svc.json
 *.json
 *.key
 
+.terraformrc
+
+#check point
+checkpoint*
+
+#hcl files
+.terraform.lock*
+.terraform.*
+
 # Local .terraform directories
 **/.terraform/*
-
 *.terraform
 
 # .tfstate files
