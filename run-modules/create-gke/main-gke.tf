@@ -31,14 +31,17 @@ locals {
 	product_string	=	format("tformers-%s", local.tfenvironment)
 }
 
+# Create VPC first using VPC module
+
 module "vpc_tformers" {
-  source  = "app.terraform.io/Tformers/cmvpc/gcp"
-  version = "1.0.2"
+  source  = "app.terraform.io/Terraformers21/modvpc/gcp"
+  version = "1.0.0"
   # insert required variables here
+
 
 #PROJECT info
   gcp_region      = var.gcp_region
-  gcp_project_id  = var.gcp_project_id  				# has to be unique "crack-photon-306705" 
+  gcp_project_id  = var.gcp_project_id  				# has to be unique
   org             = var.org				 				#Update in tfvars
   product         = local.product_string
   environment     = format("%s", var.environment)
@@ -61,22 +64,26 @@ module "vpc_tformers" {
   nat_log_config_enable                  = true
 }
 
+# Create GKE cluster resource
+# Uses outputs from VPC module 
 
 module "gke_tformers" {
-  source  = "app.terraform.io/Tformers/cmgke/gcp"
-  version = "1.0.2"
+  source  = "app.terraform.io/Terraformers21/modgke/gcp"
+  version = "1.0.0"
   # insert required variables here
 
+
 #PROJECT info
-  billing_account = var.billing_account #"017C0F-A57C09-F95161"
+  billing_account = var.billing_account 			#
   project_name    = var.gcp_project_id
   gcp_region      = var.gcp_region
-  gcp_project_id  = var.gcp_project_id  # has to be unique 
+  gcp_project_id  = var.gcp_project_id  			# has to be unique 
   org             = var.org
   product         = local.product_string
   environment     = format("%s", var.environment)
   
-#VPC specific
+#VPC specific  		# Outputs from module creating the VPC
+
   vpc_network     = module.vpc_tformers.vpc_selflink
   subnet_selflink = module.vpc_tformers.subnet_selflink
   
@@ -87,7 +94,7 @@ module "gke_tformers" {
   pods_range_name        = var.pods_cidr_name                  #"pods"
   services_range_name    = "services"
   kubernetes_version     = "1.20.10-gke.1600"
-  initial_node_count     = var.initial_node_count 
+  initial_node_count     =  var.initial_node_count 
   remove_default_node_pool= true
   node_pool_management_auto_repair  = true
   node_pool_management_auto_upgrade = true

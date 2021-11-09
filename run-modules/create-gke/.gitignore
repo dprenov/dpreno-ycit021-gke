@@ -3,6 +3,11 @@ terraform-svc.json
 *.json
 *.key
 
+.terraformrc
+
+#check point
+checkpoint*
+
 # Local .terraform directories
 **/.terraform/*
 
