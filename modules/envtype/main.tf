@@ -2,7 +2,7 @@ locals {
   environments = {
     "dev"  : local.dev,
     "uat"  : local.uat,
-	"qa"   : local.qa
+	"qa"   : local.qa,
     "prod" : local.prod
   }
 }

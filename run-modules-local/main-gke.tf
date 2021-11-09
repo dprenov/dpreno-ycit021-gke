@@ -20,33 +20,32 @@ provider "google" {
 }
 
 provider "google-beta" {
-  credentials = file("terraform-svc.json")
+  credentials = file(var.gcp_auth_file)
   project = var.gcp_project_id
   region  = var.gcp_region
   zone = var.gcp_zone
 }
 
 locals {
-    tfenvironment = terraform.workspace
+    tfenvironment 	= 	terraform.workspace
+	product_string	=	format("tformers-%s", local.tfenvironment)
 }
 
-module "vpc_tformers" {
-  source  = "app.terraform.io/Tformers/cmvpc/gcp"
-  version = "1.0.2"
-  # insert required variables here
-
+module "vpc_tformers"{
+  source = "./modules/vpc"
+ 
 #PROJECT info
   gcp_region      = var.gcp_region
-  gcp_project_id  = var.gcp_project_id  # has to be unique "crack-photon-306705" 
-  org             = "students" #Update
-  product         = format("tformers-%s", local.tfenvironment)
-  environment     = format("%s-%s", var.environment, local.tfenvironment)
+  gcp_project_id  = var.gcp_project_id  				# has to be unique "crack-photon-306705" 
+  org             = var.org 							#Update in tfvars
+  product         = local.product_string
+  environment     = format("%s", var.environment)
   
   
 #VPC specific 
   network_cidr       = "10.128.1.0/26"
   pods_cidr          = "172.0.0.0/18"
-  pods_cidr_name     = "pods"
+  pods_cidr_name     = var.pods_cidr_name          #"pods"
   services_cidr      = "172.10.0.0/21"
   private_ip_google_access = true
   services_cidr_name = "services"
@@ -62,17 +61,15 @@ module "vpc_tformers" {
 
 
 module "gke_tformers" {
-  source  = "app.terraform.io/Tformers/cmgke/gcp"
-  version = "1.0.2"
-  # insert required variables here
+  source = "./modules/gke"
 
 #PROJECT info
-  billing_account = var.billing_account #"017C0F-A57C09-F95161"
+  billing_account = var.billing_account 		#"017C0F-A57C09-F95161"
   project_name    = var.gcp_project_id
   gcp_region      = var.gcp_region
-  gcp_project_id  = var.gcp_project_id  # has to be unique 
-  org             = "tformers" #Update
-  product         = format("ycit-%s", local.tfenvironment)
+  gcp_project_id  = var.gcp_project_id  		# has to be unique 
+  org             = var.org 					#Update
+  product         = local.product_string
   environment     = format("%s-%s", var.environment, local.tfenvironment)
   
 #VPC specific
@@ -83,10 +80,10 @@ module "gke_tformers" {
   
   enable_private_nodes   = "true"
   master_ipv4_cidr_block = "172.16.0.0/28"
-  pods_range_name        = "pods"
+  pods_range_name        = var.pods_cidr_name               # "pods"
   services_range_name    = "services"
   kubernetes_version     = "1.20.10-gke.1600"
-  initial_node_count     = 1 
+  initial_node_count     = var.initial_node_count 
   remove_default_node_pool= true
   node_pool_management_auto_repair  = true
   node_pool_management_auto_upgrade = true
