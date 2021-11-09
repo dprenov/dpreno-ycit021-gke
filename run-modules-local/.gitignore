@@ -1,5 +1,8 @@
-# GCP service account credential
+# Google cloud credentials, token of service account
 terraform-svc.json
+*.json
+*.key
+
 
 # Local .terraform directories
 **/.terraform/*
@@ -16,6 +19,7 @@ crash.log
 # version control.
 #
 # example.tfvars
+*.tfvars
 
 # Ignore override files as they are usually used to override resources locally and so
 # are not checked in
