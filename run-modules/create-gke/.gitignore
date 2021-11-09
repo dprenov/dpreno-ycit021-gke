@@ -8,6 +8,10 @@ terraform-svc.json
 #check point
 checkpoint*
 
+#hcl files
+.terraform.lock*
+.terraform.*
+
 # Local .terraform directories
 **/.terraform/*
 *.terraform
