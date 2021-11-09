@@ -221,7 +221,7 @@ docker run -it -v "$(pwd):/terraformfiles" terraformers:v1 login
    
     hit 'Enter' once the value is copied.
    
-   _There is no ehco on the screen for the pasted token string, you need to trust the paste action worked._
+   _There is no echo on the screen for the pasted token string, you need to trust the paste action worked._
    
    Terraform by default will store the token in plain text in the following file for use by subsequent commands:
     /root/.terraform.d/credentials.tfrc.json
