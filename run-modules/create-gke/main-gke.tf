@@ -69,7 +69,7 @@ module "vpc_tformers" {
 
 module "gke_tformers" {
   source  = "app.terraform.io/Terraformers21/modgke/gcp"
-  version = "1.0.0"
+  version = "1.0.2"
   # insert required variables here
 
 
