@@ -1,0 +1,54 @@
+name: TFLint
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch, and only when TF or TFVARS files are involved
+  push:
+    branches: [ main ]
+    paths:
+      - '**.tf'
+      - '**.tfvars'
+        
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '**.tf'
+      - '**.tfvars'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  tflint:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Runs a container from ghcr.io, version v0.33.1
+      - name: Check linting of BUCKET Terraform files
+        uses: terraform-linters/tflint-bundle@v0.33.1
+        # here are some options: loglevel to provide visibility, module support enabled, disable 1 TFLint default rule that was giving us trouble, and manually specify the location in the repo for TF files
+        # we may need to add further steps after this to check each directory where TF files are
+        with:
+          args: --loglevel=info --module --disable-rule=terraform_deprecated_interpolation ./common/bucket/
+          
+      # Runs a container from ghcr.io, version v0.33.1
+      - name: Check linting of GKE MODULE Terraform files
+        uses: terraform-linters/tflint-bundle@v0.33.1
+        # here are some options: loglevel to provide visibility, module support enabled, disable 1 TFLint default rule that was giving us trouble, and manually specify the location in the repo for TF files
+        # we may need to add further steps after this to check each directory where TF files are
+        with:
+          args: --loglevel=info --module --disable-rule=terraform_deprecated_interpolation ./modules/gke/
+
+      # Runs a container from ghcr.io, version v0.33.1
+      - name: Check linting of VPC MODULE Terraform files
+        uses: terraform-linters/tflint-bundle@v0.33.1
+        # here are some options: loglevel to provide visibility, module support enabled, disable 1 TFLint default rule that was giving us trouble, and manually specify the location in the repo for TF files
+        # we may need to add further steps after this to check each directory where TF files are
+        with:
+          args: --loglevel=info --module --disable-rule=terraform_deprecated_interpolation ./modules/vpc/
