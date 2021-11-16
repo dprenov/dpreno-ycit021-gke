@@ -50,7 +50,7 @@ variable "versioning_enabled" {
   default     = true
 }
 
-variable "storage-class" {
+variable "storage_class" {
   type        = string
   description = "The storage class of the Storage Bucket to create"
 }
