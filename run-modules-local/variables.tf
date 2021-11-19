@@ -97,9 +97,3 @@ variable "gke_pool_machine_type" {
   type        = string
   default     = "e2-small"
 }
-
-variable "bucket_name" {
-  description = "GCS Bucket name. Value should be unique."
-  type        = string
-  default     = "tf-bucket-ycit021"
-}
