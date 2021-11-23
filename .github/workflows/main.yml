@@ -44,6 +44,13 @@ jobs:
         # we may need to add further steps after this to check each directory where TF files are
         with:
           args: --loglevel=info --module --disable-rule=terraform_deprecated_interpolation ./modules/gke/
+      
+      # Runs terraform init
+      - name: Run a Terraform init
+        uses: docker://hashicorp/terraform:0.12.11
+        with:
+          entrypoint: terraform
+          args: init ./modules/gke/
 
       # Runs a container from ghcr.io, version v0.33.1
       - name: Check linting of VPC MODULE Terraform files
