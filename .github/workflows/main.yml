@@ -52,6 +52,13 @@ jobs:
           entrypoint: terraform
           args: init ./modules/gke/
 
+      # Runs terraform validate
+      - name: Run a Terraform validate
+        uses: docker://hashicorp/terraform:0.12.11
+        with:
+          entrypoint: terraform
+          args: validate ./modules/gke/
+
       # Runs a container from ghcr.io, version v0.33.1
       - name: Check linting of VPC MODULE Terraform files
         uses: terraform-linters/tflint-bundle@v0.33.1
@@ -59,3 +66,17 @@ jobs:
         # we may need to add further steps after this to check each directory where TF files are
         with:
           args: --loglevel=info --module --disable-rule=terraform_deprecated_interpolation ./modules/vpc/
+
+      # Runs terraform init
+      - name: Run a Terraform init
+        uses: docker://hashicorp/terraform:0.12.11
+        with:
+          entrypoint: terraform
+          args: init ./modules/vpc/
+
+      # Runs terraform validate
+      - name: Run a Terraform validate
+        uses: docker://hashicorp/terraform:0.12.11
+        with:
+          entrypoint: terraform
+          args: validate ./modules/vpc/
