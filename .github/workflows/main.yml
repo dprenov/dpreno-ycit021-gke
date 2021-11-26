@@ -50,14 +50,14 @@ jobs:
         uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
         with:
           entrypoint: terraform
-          args: init ./modules/gke/
+          args: init -chdir=./modules/gke/
 
       # Runs terraform validate
       - name: Run a Terraform validate
         uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
         with:
           entrypoint: terraform
-          args: validate ./modules/gke/
+          args: validate -chdir=./modules/gke/
 
       # Runs a container from ghcr.io, version v0.33.1
       - name: Check linting of VPC MODULE Terraform files
@@ -72,11 +72,11 @@ jobs:
         uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
         with:
           entrypoint: terraform
-          args: init ./modules/vpc/
+          args: init -chdir=./modules/vpc/
 
       # Runs terraform validate
       - name: Run a Terraform validate
         uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
         with:
           entrypoint: terraform
-          args: validate ./modules/vpc/
+          args: validate -chdir=./modules/vpc/
