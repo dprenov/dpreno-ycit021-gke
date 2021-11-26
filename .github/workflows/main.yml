@@ -1,4 +1,4 @@
-name: TFLint
+name: Check-and-Build
 
 # Controls when the workflow will run
 on:
@@ -19,7 +19,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  tflint:
+  prebuildcheck:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -46,18 +46,18 @@ jobs:
           args: --loglevel=info --module --disable-rule=terraform_deprecated_interpolation ./modules/gke/
       
       # Runs terraform init
-      - name: Run a Terraform init
-        uses: docker://hashicorp/terraform:0.12.11
+      - name: Run a Terraform init on /modules/gke
+        uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
         with:
           entrypoint: terraform
-          args: init ./modules/gke/
+          args: -chdir=./modules/gke/ init
 
       # Runs terraform validate
-      - name: Run a Terraform validate
-        uses: docker://hashicorp/terraform:0.12.11
+      - name: Run a Terraform validate on /modules/gke
+        uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
         with:
           entrypoint: terraform
-          args: validate ./modules/gke/
+          args: -chdir=./modules/gke/ validate
 
       # Runs a container from ghcr.io, version v0.33.1
       - name: Check linting of VPC MODULE Terraform files
@@ -68,15 +68,15 @@ jobs:
           args: --loglevel=info --module --disable-rule=terraform_deprecated_interpolation ./modules/vpc/
 
       # Runs terraform init
-      - name: Run a Terraform init
-        uses: docker://hashicorp/terraform:0.12.11
+      - name: Run a Terraform init on /modules/vpc
+        uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
         with:
           entrypoint: terraform
-          args: init ./modules/vpc/
+          args: -chdir=./modules/vpc/ init
 
       # Runs terraform validate
-      - name: Run a Terraform validate
-        uses: docker://hashicorp/terraform:0.12.11
+      - name: Run a Terraform validate on /modules/vpc
+        uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
         with:
           entrypoint: terraform
-          args: validate ./modules/vpc/
+          args: -chdir=./modules/vpc/ validate
