@@ -47,14 +47,14 @@ jobs:
       
       # Runs terraform init
       - name: Run a Terraform init
-        uses: ycit-team-terraformers/terraformers@v1
+        uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
         with:
           entrypoint: terraform
           args: init ./modules/gke/
 
       # Runs terraform validate
       - name: Run a Terraform validate
-        uses: ycit-team-terraformers/terraformers@v1
+        uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
         with:
           entrypoint: terraform
           args: validate ./modules/gke/
@@ -69,14 +69,14 @@ jobs:
 
       # Runs terraform init
       - name: Run a Terraform init
-        uses: ycit-team-terraformers/terraformers@v1
+        uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
         with:
           entrypoint: terraform
           args: init ./modules/vpc/
 
       # Runs terraform validate
       - name: Run a Terraform validate
-        uses: ycit-team-terraformers/terraformers@v1
+        uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
         with:
           entrypoint: terraform
           args: validate ./modules/vpc/
