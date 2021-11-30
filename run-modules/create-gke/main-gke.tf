@@ -35,9 +35,9 @@ locals {
 
 module "vpc_tformers" {
   source  = "app.terraform.io/Terraformers21/modvpc/gcp"
-  version = "1.0.2"
+  version = "1.1.0"
   # insert required variables here
-
+  
 #PROJECT info
   gcp_region      = var.gcp_region
   gcp_project_id  = var.gcp_project_id  				# has to be unique
@@ -69,7 +69,7 @@ module "vpc_tformers" {
 
 module "gke_tformers" {
   source  = "app.terraform.io/Terraformers21/modgke/gcp"
-  version = "1.0.2"
+  version = "1.2.0"
   # insert required variables here
 
 #PROJECT info
