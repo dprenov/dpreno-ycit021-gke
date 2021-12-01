@@ -11,11 +11,11 @@ checkpoint*
 .terraform.lock*
 
 # Local .terraform directory directories
-.terraform.*
+#.terraform.*
 
 # Local .terraform directories
-**/.terraform/*
-*.terraform
+#**/.terraform/*
+#*.terraform
 
 # .tfstate files
 *.tfstate
@@ -45,6 +45,6 @@ override.tf.json
 # Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
 # example: *tfplan*
 
-.terraformrc
-run-modules/create-gke/.terraformrc
-run-modules/create-gke/.terraformrc
+#.terraformrc
+#run-modules/create-gke/.terraformrc
+#run-modules/create-gke/.terraformrc
