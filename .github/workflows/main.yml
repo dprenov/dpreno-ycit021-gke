@@ -43,7 +43,6 @@ jobs:
               }
             }
           EOF
-          grep atlas ./run-modules/create-gke/.terraformrc
 
       # Runs terraform init to set up modules and pull in needed providers
       - name: Run a Terraform init on CREATE-GKE Terraform files
@@ -58,6 +57,8 @@ jobs:
       # Runs a container from ghcr.io, version v0.33.1
       - name: Check linting of CREATE-GKE Terraform files
         uses: terraform-linters/tflint-bundle@v0.33.1
+        env:
+            TF_CLI_CONFIG_FILE: ./run-modules/create-gke/.terraformrc
         # here are some options: loglevel to provide visibility, module support enabled, disable 1 TFLint default rule that was giving us trouble, and manually specify the location in the repo for TF files
         # we may need to add further steps after this to check each directory where TF files are
         with:
