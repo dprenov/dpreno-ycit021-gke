@@ -48,9 +48,9 @@ jobs:
       # Runs terraform init to set up modules and pull in needed providers
       - name: Run a Terraform init on CREATE-GKE Terraform files
         uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
-        with:
-          env:
+        env:
             TF_CLI_CONFIG_FILE: ./run-modules/create-gke/.terraformrc
+        with:
           entrypoint: terraform
           args: -chdir=./run-modules/create-gke/ init
 
