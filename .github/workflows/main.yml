@@ -35,7 +35,7 @@ jobs:
         env:
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
         run: |
-          cat << EOF> ~/.terraformrc
+          cat << EOF> ./run-modules/create-gke/.terraformrc
           {
             "credentials": {
               "app.terraform.io": {
@@ -43,12 +43,14 @@ jobs:
               }
             }
           EOF
-          grep atlas ~/.terraformrc
+          grep atlas ./run-modules/create-gke/.terraformrc
 
       # Runs terraform init to set up modules and pull in needed providers
       - name: Run a Terraform init on CREATE-GKE Terraform files
         uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
         with:
+          env:
+            TF_CLI_CONFIG_FILE: ./run-modules/create-gke/.terraformrc
           entrypoint: terraform
           args: -chdir=./run-modules/create-gke/ init
 
