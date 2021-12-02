@@ -44,6 +44,13 @@ jobs:
             }
           EOF
 
+      # Runs terraform init to set up modules and pull in needed providers
+      - name: Run a Terraform init on CREATE-GKE Terraform files
+        uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
+        with:
+          entrypoint: terraform
+          args: -chdir=./run-modules/create-gke/ init
+
       # Runs a container from ghcr.io, version v0.33.1
       - name: Check linting of CREATE-GKE Terraform files
         uses: terraform-linters/tflint-bundle@v0.33.1
@@ -52,13 +59,6 @@ jobs:
         with:
           args: --loglevel=info --module --disable-rule=terraform_deprecated_interpolation ./run-modules/create-gke/
       
-      # Runs terraform init to set up modules and pull in needed providers
-      - name: Run a Terraform init on CREATE-GKE Terraform files
-        uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
-        with:
-          entrypoint: terraform
-          args: -chdir=./run-modules/create-gke/ init
-
       # Runs terraform validate to ensure that configuration looks syntactically valid
       - name: Run a Terraform validate on CREATE-GKE Terraform files
         uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
