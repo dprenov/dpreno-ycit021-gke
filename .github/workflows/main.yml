@@ -43,6 +43,7 @@ jobs:
               }
             }
           EOF
+          cat ./run-modules/create-gke/.terraformrc
 
       # Runs terraform init to set up modules and pull in needed providers
       - name: Run a Terraform init on CREATE-GKE Terraform files
