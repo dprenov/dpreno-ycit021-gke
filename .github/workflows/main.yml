@@ -35,7 +35,7 @@ jobs:
         env:
           TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
         run: |
-          cat << EOF> ./run-modules/create-gke/.terraformrc
+          cat << EOF> ~/.terraformrc
           {
             "credentials": {
               "app.terraform.io": {
@@ -43,7 +43,7 @@ jobs:
               }
             }
           EOF
-          grep atlas ./run-modules/create-gke/.terraformrc
+          grep atlas ~/.terraformrc
 
       # Runs terraform init to set up modules and pull in needed providers
       - name: Run a Terraform init on CREATE-GKE Terraform files
