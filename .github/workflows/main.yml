@@ -50,6 +50,7 @@ jobs:
         uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
         env:
             TF_CLI_CONFIG_FILE: ./run-modules/create-gke/.terraformrc
+            GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
         with:
           entrypoint: terraform
           args: -chdir=./run-modules/create-gke/ init
