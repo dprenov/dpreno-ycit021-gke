@@ -48,3 +48,6 @@ override.tf.json
 #.terraformrc
 #run-modules/create-gke/.terraformrc
 #run-modules/create-gke/.terraformrc
+
+# don't include heavy Terraform provider binaries
+**/.terraform/**/terraform-provider-google*
