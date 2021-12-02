@@ -29,54 +29,41 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      # Set up Terraform Cloud authentication, because Terraform doesn't accept environment variables we will build a terraformrc file dynamically using GITHUB secrets
+      # This is needed to be able to pull TF modules from the private Terraform registry
+      - name: Set up Terraform Cloud authentication
+        env:
+          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
+        run: |
+          cat << EOF> ./run-modules/create-gke/.terraformrc 
+          {
+            "credentials": {
+              "app.terraform.io": {
+                "token": "$TFE_TOKEN"
+              }
+            }
+          EOF
+
       # Runs a container from ghcr.io, version v0.33.1
-      - name: Check linting of BUCKET Terraform files
+      - name: Check linting of CREATE-GKE Terraform files
         uses: terraform-linters/tflint-bundle@v0.33.1
         # here are some options: loglevel to provide visibility, module support enabled, disable 1 TFLint default rule that was giving us trouble, and manually specify the location in the repo for TF files
         # we may need to add further steps after this to check each directory where TF files are
         with:
-          args: --loglevel=info --module --disable-rule=terraform_deprecated_interpolation ./common/bucket/
-          
-      # Runs a container from ghcr.io, version v0.33.1
-      - name: Check linting of GKE MODULE Terraform files
-        uses: terraform-linters/tflint-bundle@v0.33.1
-        # here are some options: loglevel to provide visibility, module support enabled, disable 1 TFLint default rule that was giving us trouble, and manually specify the location in the repo for TF files
-        # we may need to add further steps after this to check each directory where TF files are
-        with:
-          args: --loglevel=info --module --disable-rule=terraform_deprecated_interpolation ./modules/gke/
+          args: --loglevel=info --module --disable-rule=terraform_deprecated_interpolation ./run-modules/create-gke/
       
-      # Runs terraform init
-      - name: Run a Terraform init on /modules/gke
+      # Runs terraform init to set up modules and pull in needed providers
+      - name: Run a Terraform init on CREATE-GKE Terraform files
         uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
         with:
           entrypoint: terraform
-          args: -chdir=./modules/gke/ init
+          args: -chdir=./run-modules/create-gke/ init
 
-      # Runs terraform validate
-      - name: Run a Terraform validate on /modules/gke
+      # Runs terraform validate to ensure that configuration looks syntactically valid
+      - name: Run a Terraform validate on CREATE-GKE Terraform files
         uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
         with:
           entrypoint: terraform
-          args: -chdir=./modules/gke/ validate
+          args: -chdir=./run-modules/create-gke/ validate
 
-      # Runs a container from ghcr.io, version v0.33.1
-      - name: Check linting of VPC MODULE Terraform files
-        uses: terraform-linters/tflint-bundle@v0.33.1
-        # here are some options: loglevel to provide visibility, module support enabled, disable 1 TFLint default rule that was giving us trouble, and manually specify the location in the repo for TF files
-        # we may need to add further steps after this to check each directory where TF files are
-        with:
-          args: --loglevel=info --module --disable-rule=terraform_deprecated_interpolation ./modules/vpc/
-
-      # Runs terraform init
-      - name: Run a Terraform init on /modules/vpc
-        uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
-        with:
-          entrypoint: terraform
-          args: -chdir=./modules/vpc/ init
-
-      # Runs terraform validate
-      - name: Run a Terraform validate on /modules/vpc
-        uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
-        with:
-          entrypoint: terraform
-          args: -chdir=./modules/vpc/ validate
+      # 

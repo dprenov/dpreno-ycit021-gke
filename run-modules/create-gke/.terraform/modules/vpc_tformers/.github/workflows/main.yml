@@ -1,0 +1,85 @@
+name: TFLint
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch, and only when TF or TFVARS files are involved
+  push:
+    branches: [ main ]
+    paths:
+      - '**.tf'
+        
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '**.tf'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  tflint:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Runs a container from ghcr.io, version v0.33.1
+      - name: Check linting of BUCKET Terraform files
+        uses: terraform-linters/tflint-bundle@v0.33.1
+        # here are some options: loglevel to provide visibility, module support enabled, disable 1 TFLint default rule that was giving us trouble, and manually specify the location in the repo for TF files
+        # we may need to add further steps after this to check each directory where TF files are
+        with:
+          args: --loglevel=info --module --disable-rule=terraform_deprecated_interpolation 
+
+  # Create relase - part 1:  automatically bump and tag 
+  build:
+    runs-on: ubuntu-latest
+    needs: tflint
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }} || github.event_name == 'push' || github.event_name == 'pull_request'
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: '0'
+    - name: Bump version and push tag
+      id: tag_version
+      uses: anothrNick/github-tag-action@1.36.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        WITH_V: true
+  # Create relese - part 2:  Create Release
+    - name: Create a GitHub release
+      id: set_release
+      uses: ncipollo/release-action@v1
+      with:
+       tag: ${{ steps.tag_version.outputs.new_tag }}
+       name: Release ${{ steps.tag_version.outputs.new_tag }}
+       body: ${{ steps.tag_version.outputs.part }}
+       
+    # body: ${{ steps.tag_version.outputs.changelog }}
+    
+  # Push Module  for 3rd phase  - to be enhanced      
+  
+  #push_to_registry:
+#    needs: tflint
+#    name: Push Terraform VPC module to Terraform registry
+ #   runs-on: ubuntu-latest
+
+#    steps:
+#      - name: checkout
+#        uses: actions/checkout@v2
+#
+#      - name: publish
+#        if: github.event_name == 'push' || github.event_name == 'pull_request'
+#        uses: seeeverything/publish-terraform-modules@1.0.0
+#        with:
+#          modules_list: '[]'
+#          provider: "gcp"
+#          namespace: "Terraformers21"
+#          token: ${{ secrets.TF_CLOUD_API_TOKEN }}
+#          recreate: "false"
+#          base_version: "1.0.0"
+#          autobump: "true"

@@ -1,21 +1,11 @@
-# Google cloud credentials, token of service account, service-account.json or simialr
+# Google cloud credentials, token of service account
+terraform-svc.json
 *.json
 *.key
 
-# Terraform token and auth files
-.terraformrc
-checkpoint*
-
-#hcl files
-*.hcl
-.terraform.lock*
-
-# Local .terraform directory directories
-#.terraform.*
-
 # Local .terraform directories
-#**/.terraform/*
-#*.terraform
+**/.terraform/*
+*.terraform
 
 # .tfstate files
 *.tfstate
@@ -44,10 +34,3 @@ override.tf.json
 
 # Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
 # example: *tfplan*
-
-#.terraformrc
-#run-modules/create-gke/.terraformrc
-#run-modules/create-gke/.terraformrc
-
-# don't include heavy Terraform provider binaries
-**/.terraform/providers/**/terraform-provider-google*

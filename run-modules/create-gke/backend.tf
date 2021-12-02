@@ -11,6 +11,6 @@ terraform {
   backend "gcs" {
     bucket      = "tf-bucket-ycit021-dpreno"
     prefix      = "terraform/remote-module-state"
-    credentials = "gcp_auth.json"
+    #credentials = "gcp_auth.json"
   }
 }

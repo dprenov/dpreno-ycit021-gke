@@ -13,14 +13,14 @@ terraform {
 }
 
 provider "google" {
-  credentials = file(var.gcp_auth_file)
+  #credentials = file(var.gcp_auth_file)
   project = var.gcp_project_id
   region  = var.gcp_region
   zone = var.gcp_zone
 }
 
 provider "google-beta" {
-  credentials = file(var.gcp_auth_file)
+  #credentials = file(var.gcp_auth_file)
   project = var.gcp_project_id
   region  = var.gcp_region
   zone = var.gcp_zone
@@ -69,7 +69,7 @@ module "vpc_tformers" {
 
 module "gke_tformers" {
   source  = "app.terraform.io/Terraformers21/modgke/gcp"
-  version = "1.2.0"
+  version = "1.3.0"
   # insert required variables here
 
 #PROJECT info
