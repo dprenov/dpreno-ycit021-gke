@@ -62,7 +62,8 @@ jobs:
         # here are some options: loglevel to provide visibility, module support enabled, disable 1 TFLint default rule that was giving us trouble, and manually specify the location in the repo for TF files
         # we may need to add further steps after this to check each directory where TF files are
         with:
-          args: --loglevel=info --module --disable-rule=terraform_deprecated_interpolation ./run-modules/create-gke/
+          #args: --loglevel=info --module --disable-rule=terraform_deprecated_interpolation ./run-modules/create-gke/
+          args: --loglevel=info ./run-modules/create-gke/
       
       # Runs terraform validate to ensure that configuration looks syntactically valid
       - name: Run a Terraform validate on CREATE-GKE Terraform files
