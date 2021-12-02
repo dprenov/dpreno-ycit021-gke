@@ -72,4 +72,12 @@ jobs:
           entrypoint: terraform
           args: -chdir=./run-modules/create-gke/ validate
 
-      # 
+      # Runs terraform plan (later to be replaced with apply)
+      - name: Run a Terraform plan on CREATE-GKE Terraform files
+        uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
+        env:
+            TF_CLI_CONFIG_FILE: ./run-modules/create-gke/.terraformrc
+            GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+        with:
+          entrypoint: terraform
+          args: -chdir=./run-modules/create-gke/ plan
