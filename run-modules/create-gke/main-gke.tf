@@ -28,7 +28,7 @@ provider "google-beta" {
 
 locals {
   tfenvironment 	= 	terraform.workspace
-	product_string	=	format("tformers-%s", local.tfenvironment)
+	product_string	=	var.product_string
 }
 
 # Create VPC first using VPC module
@@ -43,16 +43,17 @@ module "vpc_tformers" {
   gcp_project_id  = var.gcp_project_id  				# has to be unique
   org             = var.org				 				#Update in tfvars
   product         = local.product_string
-  environment     = format("%s", var.environment)
+#  environment     = format("%s", var.environment)
+  environment     = terraform.workspace
   
   
 #VPC specific 
-  network_cidr       = var.network_cidr_range    # "10.128.1.0/26"
-  pods_cidr          = var.pods_cidr_range       # "172.0.0.0/18"
-  pods_cidr_name     = var.pods_cidr_name
-  services_cidr      = var.services_cidr_range    # "172.10.0.0/21"
+  network_cidr       = var.network_cidr_range[terraform.workspace]    # "10.128.1.0/26"
+  pods_cidr          = var.pods_cidr_range[terraform.workspace]       # "172.0.0.0/18"
+  pods_cidr_name     = "${var.pods_cidr_name}-${terraform.workspace}"
+  services_cidr      = var.services_cidr_range[terraform.workspace]    # "172.10.0.0/21"
   private_ip_google_access = true
-  services_cidr_name = var.services_cidr_name
+  services_cidr_name = "${var.services_cidr_name}-${terraform.workspace}"
 
   subnet_log_config_aggregation_interval = "INTERVAL_15_MIN"
   subnet_log_config_flow_sampling        = 0.1
@@ -79,7 +80,8 @@ module "gke_tformers" {
   gcp_project_id  = var.gcp_project_id  			# has to be unique 
   org             = var.org
   product         = local.product_string
-  environment     = format("%s", var.environment)
+  #environment     = format("%s", var.environment)
+  environment     = terraform.workspace
   
 #VPC specific  		# Outputs from module creating the VPC
 
@@ -89,9 +91,9 @@ module "gke_tformers" {
 #GKE specific
   
   enable_private_nodes   = "true"
-  master_ipv4_cidr_block = var.master_ipv4_cidr_block_range     #"172.16.0.0/28"
-  pods_range_name        = var.pods_cidr_name                  #"pods"
-  services_range_name    = var.services_cidr_name
+  master_ipv4_cidr_block = var.master_ipv4_cidr_block_range[terraform.workspace]     #"172.16.0.0/28"
+  pods_range_name        = "${var.pods_cidr_name}-${terraform.workspace}"                  #"pods"
+  services_range_name    = "${var.services_cidr_name}-${terraform.workspace}"
   kubernetes_version     = "1.20.10-gke.1600"
   initial_node_count     =  var.initial_node_count 
   remove_default_node_pool= true

@@ -5,12 +5,19 @@ variable "terraform_cloud_organisation" {
   default     = "Tformers"
 }
 
-# GCP authentication file
-variable "gcp_auth_file" {
-  type        = string
-  description = "GCP authentication file for the GCP service account key in JSON format"
-  default     = "./terraform-svc.json"
+variable "product_string" {
+  type = string
+  description = "The name of the product to be used in the creation of cloud objects"
+  default = "tformers"
+  
 }
+
+# GCP authentication file
+#variable "gcp_auth_file" {
+#  type        = string
+#  description = "GCP authentication file for the GCP service account key in JSON format"
+#  default     = "./terraform-svc.json"
+#}
 
 # Google Cloud variable section
 
@@ -42,41 +49,58 @@ variable "org" {
   default     = "ycit"
 }
 
-variable "environment" {
-  type        = string
-  description = "The prefix to add to object names indicating the environment intended when create"
-  default     = "dev"
-}
+#variable "environment" {
+#  type        = string
+#  description = "The prefix to add to object names indicating the environment intended when create"
+#  default     = "stg"
+#}
 
 variable "network_cidr_range" {
-  type        = string
+  type        = map
+  default = {
+    "stg" = "10.128.2.0/26"
+    "prd" = "10.128.3.0/26"
+  }
   description = "The IPv4 range  in CIDR notation when creating the VPC for the network."
 }
 
+
 variable "pods_cidr_range" {
-  type        = string
+  type        = map
+  default = {
+    "stg" = "172.21.0.0/18"
+    "prd" = "172.22.0.0/18"
+  }
   description = "The IPv4 range  in CIDR notation when creating the VPC for the pods."
 }
 
 variable "pods_cidr_name" {
   type        = string
   description = "The pods CIDR name"
-  default     = "pod-d"
+  default     = "pod"
 }
 
 variable "services_cidr_range" {
-  type        = string
+  type        = map
+  default = {
+    "stg" = "172.101.0.0/21"
+    "prd" = "172.102.0.0/21"
+  }
   description = "The IPv4 range  in CIDR notation for the services when creating the VPC."
 }
 
 variable "services_cidr_name" {
   type        = string
   description = "The name to assign to the service CIDR range."
-  default     = "serv-d"
+  default     = "serv"
 }
 
 variable "master_ipv4_cidr_block_range" {
-  type        = string
+  type        = map
+  default = {
+    "stg" = "172.16.0.16/28"
+    "prd" = "172.16.0.32/28"
+  }
   description = "The IPv4 range in CIDR notation for the Master IP values in GKE (for the Kubectl API)."
 }
 
@@ -89,7 +113,7 @@ variable "initial_node_count" {
 variable "node_preemptible" {
   type        = bool
   description = "Value for the node_preemptible parameter whether the resource needs to stay always ON or not."
-  default     = true
+  default     = false
 }
 
 variable "gke_pool_machine_type" {
