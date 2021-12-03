@@ -24,7 +24,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DEPLOY_ENVIRONMENT: 'stg'
-      LOCATION: 'us-central1-c'
+      REGION: 'us-central1'
+      ZONE: 'us-central1-c'
       ORGANIZATION: 'dp'
       PRODUCT_STRING: 'tformers'
       GCLOUD_PROJECT: ${{ secrets.TF_VAR_GCP_PROJECT_ID }}
@@ -88,7 +89,8 @@ jobs:
             TF_VAR_gcp_project_id: ${{ secrets.TF_VAR_GCP_PROJECT_ID }}
             TF_VAR_billing_account: ${{ secrets.TF_VAR_BILLING_ACCOUNT }}
             TF_VAR_bucket_name: ${{ secrets.TF_VAR_BUCKET_NAME }}
-            TF_VAR_gcp_zone: ${{ env.LOCATION }}
+            TF_VAR_gcp_region: ${{ env.REGION }}
+            TF_VAR_gcp_zone: ${{ env.ZONE }}
             TF_VAR_org: ${{ env.ORGANIZATION }}
             TF_VAR_product_string: ${{ env.PRODUCT_STRING }}
         with:
