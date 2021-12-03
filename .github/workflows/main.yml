@@ -87,3 +87,72 @@ jobs:
         with:
           entrypoint: terraform
           args: -chdir=./run-modules/create-gke/ plan
+
+  check-and-deploy-prd:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    env:
+      DEPLOY_ENVIRONMENT: 'prd'
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Set up Terraform Cloud authentication, because Terraform doesn't accept environment variables we will build a terraformrc file dynamically using GITHUB secrets
+      # This is needed to be able to pull TF modules from the private Terraform registry
+      - name: Set up Terraform Cloud authentication
+        env:
+          TFE_TOKEN: ${{ secrets.TFE_TOKEN }}
+        run: |
+          cat << EOF> ./run-modules/create-gke/.terraformrc
+          {
+            "credentials": {
+              "app.terraform.io": {
+                "token": "$TFE_TOKEN"
+              }
+            }
+          EOF
+
+      # Runs terraform init to set up modules and pull in needed providers
+      - name: Run a Terraform init on CREATE-GKE Terraform files
+        uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
+        env:
+            TF_CLI_CONFIG_FILE: ./run-modules/create-gke/.terraformrc
+            GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+        with:
+          entrypoint: terraform
+          args: -chdir=./run-modules/create-gke/ init
+
+      # Runs a container from ghcr.io, version v0.33.1
+      - name: Check linting of CREATE-GKE Terraform files
+        uses: terraform-linters/tflint-bundle@v0.33.1
+        env:
+            TF_CLI_CONFIG_FILE: ./run-modules/create-gke/.terraformrc
+        # here are some options: loglevel to provide visibility, module support enabled, disable 1 TFLint default rule that was giving us trouble, and manually specify the location in the repo for TF files
+        # we may need to add further steps after this to check each directory where TF files are
+        with:
+          #args: --loglevel=info --module --disable-rule=terraform_deprecated_interpolation ./run-modules/create-gke/
+          args: --loglevel=info ./run-modules/create-gke/
+      
+      # Runs terraform validate to ensure that configuration looks syntactically valid
+      - name: Run a Terraform validate on CREATE-GKE Terraform files
+        uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
+        with:
+          TF_WORKSPACE: ${{ env.DEPLOY_ENVIRONMENT }}
+          entrypoint: terraform
+          args: -chdir=./run-modules/create-gke/ validate
+
+      # Runs terraform plan (later to be replaced with apply)
+      - name: Run a Terraform plan on CREATE-GKE Terraform files
+        uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
+        env:
+            TF_CLI_CONFIG_FILE: ./run-modules/create-gke/.terraformrc
+            GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+            TF_WORKSPACE: ${{ env.DEPLOY_ENVIRONMENT }}
+            TF_VAR_gcp_project_id: ${{ secrets.TF_VAR_GCP_PROJECT_ID }}
+            TF_VAR_billing_account: ${{ secrets.TF_VAR_BILLING_ACCOUNT }}
+            TF_VAR_bucket_name: ${{ secrets.TF_VAR_BUCKET_NAME }}
+        with:
+          entrypoint: terraform
+          args: -chdir=./run-modules/create-gke/ plan
