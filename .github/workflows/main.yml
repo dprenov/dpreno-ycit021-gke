@@ -70,7 +70,7 @@ jobs:
       - name: Run a Terraform validate on CREATE-GKE Terraform files
         uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
         with:
-          TF_WORKSPACE: $DEPLOY_ENVIRONMENT
+          TF_WORKSPACE: ${{ env.DEPLOY_ENVIRONMENT }}
           entrypoint: terraform
           args: -chdir=./run-modules/create-gke/ validate
 
@@ -80,7 +80,7 @@ jobs:
         env:
             TF_CLI_CONFIG_FILE: ./run-modules/create-gke/.terraformrc
             GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-            TF_WORKSPACE: $DEPLOY_ENVIRONMENT 
+            TF_WORKSPACE: ${{ env.DEPLOY_ENVIRONMENT }}
             TF_VAR_gcp_project_id: ${{ secrets.TF_VAR_GCP_PROJECT_ID }}
             TF_VAR_billing_account: ${{ secrets.TF_VAR_BILLING_ACCOUNT }}
             TF_VAR_bucket_name: ${{ secrets.TF_VAR_BUCKET_NAME }}
