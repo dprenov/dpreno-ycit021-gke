@@ -67,7 +67,7 @@ jobs:
           args: --loglevel=info ./run-modules/create-gke/
       
       # Runs terraform validate to ensure that configuration looks syntactically valid
-      - name: Run a Terraform validate on CREATE-GKE Terraform files
+      - name: Run a Terraform validate on Staging environment
         uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
         with:
           TF_WORKSPACE: ${{ env.DEPLOY_ENVIRONMENT }}
@@ -75,7 +75,7 @@ jobs:
           args: -chdir=./run-modules/create-gke/ validate
 
       # Runs terraform plan (later to be replaced with apply)
-      - name: Run a Terraform plan on CREATE-GKE Terraform files
+      - name: Run a Terraform Apply for Staging environment
         uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
         env:
             TF_CLI_CONFIG_FILE: ./run-modules/create-gke/.terraformrc
@@ -86,7 +86,7 @@ jobs:
             TF_VAR_bucket_name: ${{ secrets.TF_VAR_BUCKET_NAME }}
         with:
           entrypoint: terraform
-          args: -chdir=./run-modules/create-gke/ plan
+          args: -chdir=./run-modules/create-gke/ apply -auto-approve
 
   check-and-deploy-prd:
     # The type of runner that the job will run on
