@@ -1,4 +1,4 @@
-name: Check-and-Build
+name: Check-and-Deploy
 
 # Controls when the workflow will run
 on:
@@ -7,22 +7,23 @@ on:
     branches: [ main ]
     paths:
       - '**.tf'
-      - '**.tfvars'
+      #- '**.tfvars'
         
   pull_request:
     branches: [ main ]
     paths:
       - '**.tf'
-      - '**.tfvars'
+      #- '**.tfvars'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
-  prebuildcheck:
+  check-and-deploy-stg:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
+    env:
+      DEPLOY_ENVIRONMENT: 'stg'
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -69,6 +70,7 @@ jobs:
       - name: Run a Terraform validate on CREATE-GKE Terraform files
         uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
         with:
+          TF_WORKSPACE: $DEPLOY_ENVIRONMENT
           entrypoint: terraform
           args: -chdir=./run-modules/create-gke/ validate
 
@@ -78,6 +80,10 @@ jobs:
         env:
             TF_CLI_CONFIG_FILE: ./run-modules/create-gke/.terraformrc
             GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+            TF_WORKSPACE: $DEPLOY_ENVIRONMENT 
+            TF_VAR_gcp_project_id: ${{ secrets.TF_VAR_GCP_PROJECT_ID }}
+            TF_VAR_billing_account: ${{ secrets.TF_VAR_BILLING_ACCOUNT }}
+            TF_VAR_bucket_name: ${{ secrets.TF_VAR_BUCKET_NAME }}
         with:
           entrypoint: terraform
           args: -chdir=./run-modules/create-gke/ plan
