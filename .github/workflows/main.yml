@@ -24,6 +24,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DEPLOY_ENVIRONMENT: 'stg'
+      LOCATION: 'us-central1-c'
+      ORGANIZATION: 'dp'
+      PRODUCT_STRING: 'tformers'
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -74,7 +77,7 @@ jobs:
           entrypoint: terraform
           args: -chdir=./run-modules/create-gke/ validate
 
-      # Runs terraform plan (later to be replaced with apply)
+      # Runs terraform apply automatically - no approval step
       - name: Run a Terraform Apply for Staging environment
         uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
         env:
@@ -84,15 +87,38 @@ jobs:
             TF_VAR_gcp_project_id: ${{ secrets.TF_VAR_GCP_PROJECT_ID }}
             TF_VAR_billing_account: ${{ secrets.TF_VAR_BILLING_ACCOUNT }}
             TF_VAR_bucket_name: ${{ secrets.TF_VAR_BUCKET_NAME }}
+            TF_VAR_gcp_zone: ${{ env.LOCATION }}
+            TF_VAR_org: ${{ env.ORGANIZATION }}
+            TF_VAR_product_string: ${{ env.PRODUCT_STRING }}
         with:
           entrypoint: terraform
           args: -chdir=./run-modules/create-gke/ apply -auto-approve
+
+      # Authenticate to Google Cloud using GitHub Secret for JSON service account token
+      - name: Authenticate to Google Cloud Platform
+        uses: google-github-actions/auth@v0.4.0
+        with:
+          credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
+      
+      # Authenticate to the GKE Kubernetes cluster we justed created above, generate a kubeconfig
+      - name: Authenticate to Kubernetes
+        uses: google-github-actions/get-gke-credentials@v0.3.0
+        with:
+          cluster_name: gke-${{ env.ORGANIZATION }}-${{ env.PRODUCT_STRING }}-${{ env.DEPLOY_ENVIRONMENT }}
+          location: ${{ env.LOCATION }}
+      
+      # Test kubectl connection
+      - name: Check Kubernetes cluster responding to kubectl
+        run: kubectl get nodes
 
   check-and-deploy-prd:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     env:
       DEPLOY_ENVIRONMENT: 'prd'
+      LOCATION: 'us-central1-c'
+      ORGANIZATION: 'dp'
+      PRODUCT_STRING: 'tformers'
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -153,6 +179,10 @@ jobs:
             TF_VAR_gcp_project_id: ${{ secrets.TF_VAR_GCP_PROJECT_ID }}
             TF_VAR_billing_account: ${{ secrets.TF_VAR_BILLING_ACCOUNT }}
             TF_VAR_bucket_name: ${{ secrets.TF_VAR_BUCKET_NAME }}
+            TF_VAR_gcp_zone: ${{ env.LOCATION }}
+            TF_VAR_org: ${{ env.ORGANIZATION }}
+            TF_VAR_product_string: ${{ env.PRODUCT_STRING }}
+
         with:
           entrypoint: terraform
           args: -chdir=./run-modules/create-gke/ plan
