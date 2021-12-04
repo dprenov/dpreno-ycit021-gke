@@ -126,6 +126,7 @@ jobs:
         with:
           repository: dpreno-mcgill/dpreno-react-redux-chart
           path: chart-${{ env.ORGANIZATION }}-${{ env.PRODUCT_STRING }}-${{ env.DEPLOY_ENVIRONMENT }}
+          ref: main
       
       # Install or upgrade Helm chart
       - name: Apply Helm chart to Kubernetes cluster
