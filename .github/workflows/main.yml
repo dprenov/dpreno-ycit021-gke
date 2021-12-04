@@ -135,8 +135,8 @@ jobs:
           exec: helm upgrade ${{ env.ORGANIZATION }}-${{ env.PRODUCT_STRING }}-${{ env.DEPLOY_ENVIRONMENT }} chart-${{ env.ORGANIZATION }}-${{ env.PRODUCT_STRING }}-${{ env.DEPLOY_ENVIRONMENT }} --install --wait
 
       # Display k8s status after Helm deploy
-      - name: Check kubectl status post-deploy
-        run: kubectl get all
+      - name: Check kubectl and Helm status post-deploy
+        run:  kubectl get all
 
       # Display service URL
       - name: Display service URL
