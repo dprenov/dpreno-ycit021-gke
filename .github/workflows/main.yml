@@ -19,6 +19,12 @@ on:
   workflow_dispatch:
 
 jobs:
+
+  ######################
+  #
+  # Staging deployment
+  #
+  ######################
   check-and-deploy-stg:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -114,6 +120,24 @@ jobs:
       - name: Check Kubernetes cluster responding to kubectl
         run: kubectl get nodes
 
+      # Checkout Helm chart for application
+      - name: Checkout Helm chart
+        uses: actions/checkout@v2
+        with:
+          repository: dpreno-mcgill/dpreno-react-redux-chart
+          path: chart-${{ env.ORGANIZATION }}-${{ env.PRODUCT_STRING }}-${{ env.DEPLOY_ENVIRONMENT }}
+      
+      # Install or upgrade Helm chart
+      - name: Apply Helm chart to Kubernetes cluster
+        uses: WyriHaximus/github-action-helm3@v2
+        with:
+          exec: helm upgrade ${{ env.ORGANIZATION }}-${{ env.PRODUCT_STRING }}-${{ env.DEPLOY_ENVIRONMENT }} chart-${{ env.ORGANIZATION }}-${{ env.PRODUCT_STRING }}-${{ env.DEPLOY_ENVIRONMENT }} --install --wait
+
+  ##########################
+  #
+  # Production deployment
+  #
+  ##########################
   check-and-deploy-prd:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
