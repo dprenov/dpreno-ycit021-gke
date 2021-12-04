@@ -141,10 +141,10 @@ jobs:
       # Display service URL
       - name: Display service URL
         run: |
-            export SERVICE_IP=$(kubectl get svc --namespace default dp-tformers-stg-dpreno-react-redux --template "{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}")
-            echo \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
+            export SERVICE_IP=$(kubectl get svc --namespace default ${{ env.ORGANIZATION }}-${{ env.PRODUCT_STRING }}-${{ env.DEPLOY_ENVIRONMENT }}-dpreno-react-redux --template "{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}")
+            echo \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
             echo \# Access the application at http://$SERVICE_IP
-            echo \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
+            echo \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
 
   ##########################
   #
