@@ -108,7 +108,7 @@ jobs:
         uses: google-github-actions/get-gke-credentials@v0.3.0
         with:
           cluster_name: gke-${{ env.ORGANIZATION }}-${{ env.PRODUCT_STRING }}-${{ env.DEPLOY_ENVIRONMENT }}
-          location: ${{ env.ZONE }}
+          location: ${{ env.REGION }}
       
       # Test kubectl connection
       - name: Check Kubernetes cluster responding to kubectl
