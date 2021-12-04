@@ -134,6 +134,18 @@ jobs:
         with:
           exec: helm upgrade ${{ env.ORGANIZATION }}-${{ env.PRODUCT_STRING }}-${{ env.DEPLOY_ENVIRONMENT }} chart-${{ env.ORGANIZATION }}-${{ env.PRODUCT_STRING }}-${{ env.DEPLOY_ENVIRONMENT }} --install --wait
 
+      # Display k8s status after Helm deploy
+      - name: Check kubectl status post-deploy
+        run: kubectl get all
+
+      # Display service URL
+      - name: Display service URL
+        run: |
+            export SERVICE_IP=$(kubectl get svc --namespace default dp-tformers-stg-dpreno-react-redux --template "{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}")
+            echo \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
+            echo \# Access the application at http://$SERVICE_IP
+            echo \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
+
   ##########################
   #
   # Production deployment
