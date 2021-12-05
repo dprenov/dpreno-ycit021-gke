@@ -213,8 +213,8 @@ jobs:
           entrypoint: terraform
           args: -chdir=./run-modules/create-gke/ validate
 
-      # Runs terraform plan (later to be replaced with apply)
-      - name: Run a Terraform plan on CREATE-GKE Terraform files
+      # Runs terraform apply automatically - no approval step
+      - name: Run a Terraform Apply for Production environment
         uses: docker://ghcr.io/ycit-team-terraformers/terraformers:v1
         env:
             TF_CLI_CONFIG_FILE: ./run-modules/create-gke/.terraformrc
@@ -224,13 +224,12 @@ jobs:
             TF_VAR_billing_account: ${{ secrets.TF_VAR_BILLING_ACCOUNT }}
             TF_VAR_bucket_name: ${{ secrets.TF_VAR_BUCKET_NAME }}
             TF_VAR_gcp_region: ${{ env.REGION }}
-            TF_VAR_gcp_zone: ${{ env.LOCATION }}
+            TF_VAR_gcp_zone: ${{ env.ZONE }}
             TF_VAR_org: ${{ env.ORGANIZATION }}
             TF_VAR_product_string: ${{ env.PRODUCT_STRING }}
-
         with:
           entrypoint: terraform
-          args: -chdir=./run-modules/create-gke/ plan
+          args: -chdir=./run-modules/create-gke/ apply -auto-approve
 
       # Authenticate to Google Cloud using GitHub Secret for JSON service account token
       - name: Authenticate to Google Cloud Platform
