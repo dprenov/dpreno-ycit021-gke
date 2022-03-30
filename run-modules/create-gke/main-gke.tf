@@ -94,7 +94,7 @@ module "gke_tformers" {
   master_ipv4_cidr_block = var.master_ipv4_cidr_block_range[terraform.workspace]     #"172.16.0.0/28"
   pods_range_name        = "${var.pods_cidr_name}-${terraform.workspace}"                  #"pods"
   services_range_name    = "${var.services_cidr_name}-${terraform.workspace}"
-  kubernetes_version     = "1.20.10-gke.1600"
+  kubernetes_version     = "1.20.15-gke.1000"
   initial_node_count     =  var.initial_node_count 
   remove_default_node_pool= true
   node_pool_management_auto_repair  = true
