@@ -112,13 +112,13 @@ jobs:
       - name: Authenticate to Google Cloud Platform
         uses: google-github-actions/auth@v0.4.0
         with:
-          token_format: 'access_token'
+          #token_format: 'access_token'
           workload_identity_provider: 'projects/1099132367491/locations/global/workloadIdentityPools/github-actions-test/providers/gh-identity-provider'
           service_account: 'terraform-ycit021@ycit019-assignment.iam.gserviceaccount.com'
       
       # Authenticate to the GKE Kubernetes cluster we justed created above, generate a kubeconfig
       - name: Authenticate to Kubernetes
-        uses: google-github-actions/get-gke-credentials@v0.3.0
+        uses: google-github-actions/get-gke-credentials@v0.4.0
         with:
           cluster_name: gke-${{ env.ORGANIZATION }}-${{ env.PRODUCT_STRING }}-${{ env.DEPLOY_ENVIRONMENT }}
           location: ${{ env.REGION }}
